@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EnglishLevel {
+  A1
+  A2
+  B1
+  B2_PLUS
+  UNKNOWN
+}
+
+enum LessonCategory {
+  VOCABULARY
+  GRAMMAR
+  LISTENING
+}
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  displayName     String
+  passwordHash    String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  learningProfile LearningProfile?
+  lessonCompletions LessonCompletion[]
+}
+
+model LearningProfile {
+  id              String       @id @default(cuid())
+  userId          String       @unique
+  dailyGoal       Int          @default(10)
+  englishLevel    EnglishLevel @default(A1)
+  dailyReminder   Boolean      @default(true)
+  soundEffects    Boolean      @default(true)
+  hapticFeedback  Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Lesson {
+  id                   String             @id
+  title                String
+  description          String
+  category             LessonCategory
+  durationMinutes      Int
+  exerciseCount        Int
+  position             Int                @unique
+  isInitiallyAvailable Boolean            @default(false)
+  isPublished          Boolean            @default(true)
+  completions          LessonCompletion[]
+}
+
+model LessonCompletion {
+  id             String   @id @default(cuid())
+  userId         String
+  lessonId       String
+  correctAnswers Int
+  totalQuestions Int
+  durationMinutes Int
+  attempts       Int      @default(1)
+  completedAt    DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId, completedAt])
+}

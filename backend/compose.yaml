@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: speakup-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: speakup
+      POSTGRES_USER: speakup
+      POSTGRES_PASSWORD: speakup
+    ports:
+      - "15432:5432"
+    volumes:
+      - speakup_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U speakup -d speakup"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  speakup_postgres_data:
