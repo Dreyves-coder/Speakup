@@ -20,6 +20,10 @@ export const ENGLISH_LEVELS: Record<
 export const DEFAULT_USER_PREFERENCES: UserPreferences = {
   dailyGoal: 10,
   dailyReminder: true,
+  dailyReminderDays: [0, 1, 2, 3, 4, 5, 6],
+  dailyReminderTime: "19:00",
+  calendarEventEnabled: false,
+  calendarId: null,
   displayName: "Alex Morgan",
   englishLevel: "a1",
   hapticFeedback: false,

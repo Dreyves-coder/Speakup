@@ -6,7 +6,9 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
 
-configureNotificationHandling();
+void configureNotificationHandling().catch((error: unknown) => {
+  console.error("Failed to configure notification handling.", error);
+});
 
 function RootNavigator() {
   const { isReady, session } = useAuth();

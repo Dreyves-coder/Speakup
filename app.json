@@ -41,9 +41,14 @@
           "imageWidth": 76
         }
       ],
-      "expo-secure-store"
-      ,
-      "expo-notifications"
+      "expo-secure-store",
+      "expo-notifications",
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "SpeakUp needs calendar access to add your recurring learning reminders."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

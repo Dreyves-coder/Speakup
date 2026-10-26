@@ -40,6 +40,22 @@ export function UserPreferencesProvider({ children }: PropsWithChildren) {
   const [syncStatus, setSyncStatus] =
     useState<PreferencesSyncStatus>("local");
   const syncVersion = useRef(0);
+  const reminderSettings = useMemo(
+    () => ({
+      calendarEventEnabled: preferences.calendarEventEnabled,
+      calendarId: preferences.calendarId,
+      dailyReminder: preferences.dailyReminder,
+      dailyReminderDays: preferences.dailyReminderDays,
+      dailyReminderTime: preferences.dailyReminderTime,
+    }),
+    [
+      preferences.calendarEventEnabled,
+      preferences.calendarId,
+      preferences.dailyReminder,
+      preferences.dailyReminderDays,
+      preferences.dailyReminderTime,
+    ],
+  );
 
   const synchronize = useCallback(async (value: UserPreferences) => {
     if (!session) {
@@ -117,8 +133,10 @@ export function UserPreferencesProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (!isReady) return;
-    void syncDailyReminder(preferences.dailyReminder);
-  }, [isReady, preferences.dailyReminder]);
+    void syncDailyReminder(reminderSettings).catch((error: unknown) => {
+      console.error("Failed to sync the daily reminder.", error);
+    });
+  }, [isReady, reminderSettings]);
 
   const updatePreferences = useCallback(
     (updates: Partial<UserPreferences>) => {
